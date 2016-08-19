@@ -12,6 +12,14 @@ class Model
     def self.get_table(table_name)
       $data[table_name]
     end
+    
+    def self.count(table_name)
+      $data[table_name].length
+    end
+    
+    def self.push(table_name, instance)
+      $data[table_name] << instance
+    end
   end
   
   def self.inherited(subclass)
@@ -21,8 +29,19 @@ class Model
   end
 
   def self.table
-    table_name = ActiveSupport::Inflector.tableize(self.name).to_sym
-    Data.get_table(table_name)
+    Data.get_table(self.default_table_name)
+  end
+  
+  def self.default_table_name
+    ActiveSupport::Inflector.tableize(self.name).to_sym
+  end
+  
+  def self.count
+    Data.count(self.default_table_name)
+  end
+  
+  def self.table_push(instance)
+    Data.push(self.default_table_name, instance)
   end
   
   def initialize(params={})
@@ -34,11 +53,12 @@ class Model
   def id
     @id
   end
-  
+   
   def save
-    @id = @@a.size + 1
-    @created_at = Time.now
-    @@a.push(self)
+    @id = self.class.count + 1
+    @created_at = Time.now unless @created_at
+    @updated_at = Time.now
+    self.class.table_push(self)
     true
   end
 end
