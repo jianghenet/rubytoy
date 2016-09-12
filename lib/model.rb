@@ -55,10 +55,23 @@ class Model
   end
    
   def save
-    @id = self.class.count + 1
-    @created_at = Time.now unless @created_at
+    if @id.present?
+      create
+    else
+      update
+    end
+  end
+  
+  def create
     @updated_at = Time.now
-    self.class.table_push(self)
     true
+  end
+  
+  def update
+      @id = self.class.count + 1
+      @created_at = Time.now
+      @updated_at = @created_at
+      self.class.table_push(self)
+      true
   end
 end

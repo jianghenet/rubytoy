@@ -1,14 +1,13 @@
 class Root
 
   def initialize
-    
+
   end
-  
-  
-  def trade(payer, payee, amount)
-    transaction = Transaction.new payee: payee, payer: payer, amount: amount
-    transaction.save
-    true
+    
+  def trade
+    transaction = Transaction.new payee: User.gggddd, payer: User.gggddd, amount: rand * 100000
+    transaction.save    
+    puts "#{transaction.payer.name} paid #{transaction.amount} to #{transaction.payee.name}"
   end
  
   def inspect
